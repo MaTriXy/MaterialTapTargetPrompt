@@ -19,26 +19,67 @@ package uk.co.samuelwall.materialtaptargetprompt.sample;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.view.MotionEvent;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.FullscreenPromptBackground;
+import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.RectanglePromptBackground;
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
+    private ActionMode mActionMode;
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback()
+    {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu)
+        {
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.actionmode, menu);
+            return true;
+        }
 
-    private MaterialTapTargetPrompt mFabPrompt;
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu)
+        {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item)
+        {
+            mActionMode.finish();
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode)
+        {
+            mActionMode = null;
+        }
+    };
+
+    MaterialTapTargetPrompt mFabPrompt;
 
     public void showFabPrompt(View view)
     {
@@ -46,28 +87,43 @@ public class MainActivity extends AppCompatActivity
         {
             return;
         }
+        SpannableStringBuilder secondaryText = new SpannableStringBuilder("Tap the envelop to start composing your first email");
+        secondaryText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.colorAccent)), 8, 15, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        SpannableStringBuilder primaryText = new SpannableStringBuilder("Send your first email");
+        primaryText.setSpan(new BackgroundColorSpan(ContextCompat.getColor(this, R.color.colorAccent)), 0, 4, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         mFabPrompt = new MaterialTapTargetPrompt.Builder(MainActivity.this)
                 .setTarget(findViewById(R.id.fab))
-                .setPrimaryText("Send your first email")
-                .setSecondaryText("Tap the envelop to start composing your first email")
+                .setFocalPadding(R.dimen.dp40)
+                .setPrimaryText(primaryText)
+                .setSecondaryText(secondaryText)
+                .setBackButtonDismissEnabled(true)
                 .setAnimationInterpolator(new FastOutSlowInInterpolator())
-                .setOnHidePromptListener(new MaterialTapTargetPrompt.OnHidePromptListener()
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
                 {
                     @Override
-                    public void onHidePrompt(MotionEvent event, boolean tappedTarget)
+                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
                     {
-                        mFabPrompt = null;
-                        //Do something such as storing a value so that this prompt is never shown again
-                    }
-
-                    @Override
-                    public void onHidePromptComplete()
-                    {
-
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED
+                                || state == MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED)
+                        {
+                            mFabPrompt = null;
+                            //Do something such as storing a value so that this prompt is never shown again
+                        }
                     }
                 })
                 .create();
         mFabPrompt.show();
+    }
+
+    public void showNavPrompt(View view)
+    {
+        new MaterialTapTargetPrompt.Builder(this)
+                .setTarget(R.id.navfab)
+                .setPrimaryText(R.string.example_fab_title)
+                .setSecondaryText(R.string.example_fab_description)
+                .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                .setMaxTextWidth(R.dimen.tap_target_menu_max_width)
+                .show();
     }
 
     public void showSideNavigationPrompt(View view)
@@ -75,24 +131,22 @@ public class MainActivity extends AppCompatActivity
         final MaterialTapTargetPrompt.Builder tapTargetPromptBuilder = new MaterialTapTargetPrompt.Builder(this)
                 .setPrimaryText(R.string.menu_prompt_title)
                 .setSecondaryText(R.string.menu_prompt_description)
+                .setFocalPadding(R.dimen.dp40)
                 .setAnimationInterpolator(new FastOutSlowInInterpolator())
                 .setMaxTextWidth(R.dimen.tap_target_menu_max_width)
                 .setIcon(R.drawable.ic_menu);
         final Toolbar tb = (Toolbar) this.findViewById(R.id.toolbar);
         tapTargetPromptBuilder.setTarget(tb.getChildAt(1));
 
-        tapTargetPromptBuilder.setOnHidePromptListener(new MaterialTapTargetPrompt.OnHidePromptListener()
+        tapTargetPromptBuilder.setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
         {
             @Override
-            public void onHidePrompt(MotionEvent event, boolean tappedTarget)
+            public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
             {
-                //Do something such as storing a value so that this prompt is never shown again
-            }
-
-            @Override
-            public void onHidePromptComplete()
-            {
-
+                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
+                {
+                    //Do something such as storing a value so that this prompt is never shown again
+                }
             }
         });
         tapTargetPromptBuilder.show();
@@ -107,33 +161,146 @@ public class MainActivity extends AppCompatActivity
                 .setMaxTextWidth(R.dimen.tap_target_menu_max_width)
                 .setIcon(R.drawable.ic_more_vert);
         final Toolbar tb = (Toolbar) this.findViewById(R.id.toolbar);
-        tapTargetPromptBuilder.setTarget(tb.getChildAt(2));
-
-        tapTargetPromptBuilder.setOnHidePromptListener(new MaterialTapTargetPrompt.OnHidePromptListener()
+        final View child = tb.getChildAt(2);
+        if (child instanceof ActionMenuView)
         {
-            @Override
-            public void onHidePrompt(MotionEvent event, boolean tappedTarget)
-            {
-                //Do something such as storing a value so that this prompt is never shown again
-            }
-
-            @Override
-            public void onHidePromptComplete()
-            {
-
-            }
-        });
+            final ActionMenuView actionMenuView = ((ActionMenuView) child);
+            tapTargetPromptBuilder.setTarget(actionMenuView.getChildAt(actionMenuView.getChildCount() - 1));
+        }
+        else
+        {
+            Toast.makeText(this, R.string.overflow_unavailable, Toast.LENGTH_SHORT);
+        }
         tapTargetPromptBuilder.show();
+    }
+
+    public void showSearchPrompt(View view)
+    {
+        new MaterialTapTargetPrompt.Builder(this)
+                .setPrimaryText(R.string.search_prompt_title)
+                .setSecondaryText(R.string.search_prompt_description)
+                .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                .setMaxTextWidth(R.dimen.tap_target_menu_max_width)
+                .setIcon(R.drawable.ic_search)
+                .setTarget(R.id.action_search)
+                .show();
+    }
+
+    public void showBottomSheetDialogPrompt(View view)
+    {
+        final BottomSheetDialogFragmentExample bottomSheetDialogFragmentExample =
+                new BottomSheetDialogFragmentExample();
+
+        bottomSheetDialogFragmentExample.show(getSupportFragmentManager(),
+                bottomSheetDialogFragmentExample.getTag());
     }
 
     public void showStylePrompt(View view)
     {
-        new MaterialTapTargetPrompt.Builder(this, R.style.MaterialTapTargetPromptTheme_FabTarget).show();
+        final MaterialTapTargetPrompt.Builder builder = new MaterialTapTargetPrompt.Builder(this, R.style.MaterialTapTargetPromptTheme_FabTarget);
+        final Toolbar tb = (Toolbar) this.findViewById(R.id.toolbar);
+        final View child = tb.getChildAt(2);
+        if (child instanceof ActionMenuView)
+        {
+            final ActionMenuView actionMenuView = ((ActionMenuView) child);
+            builder.setTarget(actionMenuView.getChildAt(actionMenuView.getChildCount() - 1));
+        }
+        else
+        {
+            Toast.makeText(this, R.string.overflow_unavailable, Toast.LENGTH_SHORT);
+        }
+        builder.setIcon(R.drawable.ic_more_vert)
+                .show();
+    }
+
+    public void showRectPrompt(View view)
+    {
+        new MaterialTapTargetPrompt.Builder(this)
+                .setTarget(view)
+                .setPrimaryText("Different shapes")
+                .setSecondaryText("Extend PromptFocal or PromptBackground to change the shapes")
+                .setPromptBackground(new RectanglePromptBackground())
+                .setPromptFocal(new RectanglePromptFocal())
+                .show();
+    }
+
+    public void showFullscreenRectPrompt(View view)
+    {
+        new MaterialTapTargetPrompt.Builder(this)
+                .setTarget(view)
+                .setPrimaryText("Different shapes")
+                .setSecondaryText("Extend PromptFocal or PromptBackground to change the shapes")
+                .setPromptBackground(new FullscreenPromptBackground())
+                .setPromptFocal(new RectanglePromptFocal())
+                .show();
     }
 
     public void showDialog(View view)
     {
         startActivity(new Intent(this, DialogStyleActivity.class));
+    }
+
+    public void showActionModePrompt(View view)
+    {
+        mActionMode = this.startSupportActionMode(mActionModeCallback);
+        new MaterialTapTargetPrompt.Builder(MainActivity.this)
+                .setPrimaryText(R.string.action_mode_prompt_title)
+                .setSecondaryText(R.string.action_mode_prompt_description)
+                .setFocalPadding(R.dimen.dp40)
+                .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                .setMaxTextWidth(R.dimen.tap_target_menu_max_width)
+                .setTarget(findViewById(android.support.v7.appcompat.R.id.action_mode_close_button))
+                .setIcon(R.drawable.ic_back)
+                .show();
+    }
+
+    public void showActivity(View view)
+    {
+        startActivity(new Intent(this, EmptyActivity.class));
+    }
+
+
+    public void showCentreActivity(View view)
+    {
+        startActivity(new Intent(this, CentrePositionActivity.class));
+    }
+
+    public void showCardsActivity(View view)
+    {
+        startActivity(new Intent(this, CardActivity.class));
+    }
+
+    public void showNoAutoDismiss(View view)
+    {
+        if (mFabPrompt != null)
+        {
+            return;
+        }
+        mFabPrompt = new MaterialTapTargetPrompt.Builder(MainActivity.this)
+                .setTarget(findViewById(R.id.fab))
+                .setPrimaryText("No Auto Dismiss")
+                .setSecondaryText("This prompt will only be removed after tapping the envelop")
+                .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                .setAutoDismiss(false)
+                .setAutoFinish(false)
+                .setCaptureTouchEventOutsidePrompt(true)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                {
+                    @Override
+                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                    {
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
+                        {
+                            prompt.finish();
+                            mFabPrompt = null;
+                        }
+                        else if (state == MaterialTapTargetPrompt.STATE_NON_FOCAL_PRESSED)
+                        {
+                            mFabPrompt = null;
+                        }
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -214,33 +381,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item)
     {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera)
-        {
-            // Handle the camera action
-        }
-        else if (id == R.id.nav_gallery)
-        {
-
-        }
-        else if (id == R.id.nav_slideshow)
-        {
-
-        }
-        else if (id == R.id.nav_manage)
-        {
-
-        }
-        else if (id == R.id.nav_share)
-        {
-
-        }
-        else if (id == R.id.nav_send)
-        {
-
-        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

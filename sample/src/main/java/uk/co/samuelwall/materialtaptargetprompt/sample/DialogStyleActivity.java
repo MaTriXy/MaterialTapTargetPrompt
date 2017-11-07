@@ -19,8 +19,12 @@ package uk.co.samuelwall.materialtaptargetprompt.sample;
 import android.os.Bundle;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
@@ -38,13 +42,105 @@ public class DialogStyleActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    public void showPrompt(View view)
+    public void showFabPrompt(View view)
     {
         new MaterialTapTargetPrompt.Builder(this)
                 .setTarget(R.id.fab)
                 .setAnimationInterpolator(new FastOutSlowInInterpolator())
                 .setPrimaryText("Clipped to activity bounds")
                 .setSecondaryText("The prompt does not draw outside the activity")
+                .setClipToView(findViewById(R.id.dialog_view))
                 .show();
+    }
+
+    public void showSideNavigationPrompt(View view)
+    {
+        final MaterialTapTargetPrompt.Builder tapTargetPromptBuilder = new MaterialTapTargetPrompt.Builder(this)
+                .setPrimaryText(R.string.menu_prompt_title)
+                .setSecondaryText(R.string.menu_prompt_description)
+                .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                .setMaxTextWidth(R.dimen.tap_target_menu_max_width)
+                .setIcon(R.drawable.ic_back)
+                .setClipToView(findViewById(R.id.dialog_view));
+        final Toolbar tb = (Toolbar) this.findViewById(R.id.toolbar);
+        tapTargetPromptBuilder.setTarget(tb.getChildAt(1));
+
+        tapTargetPromptBuilder.setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+        {
+            @Override
+            public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+            {
+                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
+                {
+                    //Do something such as storing a value so that this prompt is never shown again
+                }
+            }
+        });
+        tapTargetPromptBuilder.show();
+    }
+
+    public void showOverflowPrompt(View view)
+    {
+        final MaterialTapTargetPrompt.Builder tapTargetPromptBuilder = new MaterialTapTargetPrompt.Builder(this)
+                .setPrimaryText(R.string.overflow_prompt_title)
+                .setSecondaryText(R.string.overflow_prompt_description)
+                .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                .setMaxTextWidth(R.dimen.max_prompt_width)
+                .setIcon(R.drawable.ic_more_vert)
+                .setClipToView(findViewById(R.id.dialog_view));
+        final Toolbar tb = (Toolbar) this.findViewById(R.id.toolbar);
+        final View child = tb.getChildAt(2);
+        if (child instanceof ActionMenuView)
+        {
+            final ActionMenuView actionMenuView = ((ActionMenuView) child);
+            tapTargetPromptBuilder.setTarget(actionMenuView.getChildAt(actionMenuView.getChildCount() - 1));
+        }
+        else
+        {
+            Toast.makeText(this, R.string.overflow_unavailable, Toast.LENGTH_SHORT);
+        }
+        tapTargetPromptBuilder.show();
+    }
+
+    public void showSearchPrompt(View view)
+    {
+        new MaterialTapTargetPrompt.Builder(this)
+                .setPrimaryText(R.string.search_prompt_title)
+                .setSecondaryText(R.string.search_prompt_description)
+                .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                .setMaxTextWidth(R.dimen.max_prompt_width)
+                .setIcon(R.drawable.ic_search)
+                .setTarget(R.id.action_search)
+                .setClipToView(findViewById(R.id.dialog_view))
+                .show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == android.R.id.home)
+        {
+            this.onBackPressed();
+            return true;
+        }
+        else if (id == R.id.action_settings)
+        {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
