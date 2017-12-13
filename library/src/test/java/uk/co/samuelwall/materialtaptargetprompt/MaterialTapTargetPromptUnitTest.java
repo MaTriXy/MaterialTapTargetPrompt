@@ -19,6 +19,7 @@ package uk.co.samuelwall.materialtaptargetprompt;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -97,7 +98,7 @@ public class MaterialTapTargetPromptUnitTest
                 .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
                 {
                     @Override
-                    public void onPromptStateChanged(final MaterialTapTargetPrompt prompt, final int state)
+                    public void onPromptStateChanged(@NonNull final MaterialTapTargetPrompt prompt, final int state)
                     {
 
                     }
@@ -121,7 +122,7 @@ public class MaterialTapTargetPromptUnitTest
                 .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
                 {
                     @Override
-                    public void onPromptStateChanged(final MaterialTapTargetPrompt prompt, final int state)
+                    public void onPromptStateChanged(@NonNull final MaterialTapTargetPrompt prompt, final int state)
                     {
                         if (stateProgress == 0)
                         {
@@ -174,7 +175,7 @@ public class MaterialTapTargetPromptUnitTest
                 .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
                 {
                     @Override
-                    public void onPromptStateChanged(final MaterialTapTargetPrompt prompt, final int state)
+                    public void onPromptStateChanged(@NonNull final MaterialTapTargetPrompt prompt, final int state)
                     {
                         if (stateProgress == 0)
                         {
@@ -237,7 +238,7 @@ public class MaterialTapTargetPromptUnitTest
                 .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
                 {
                     @Override
-                    public void onPromptStateChanged(final MaterialTapTargetPrompt prompt, final int state)
+                    public void onPromptStateChanged(@NonNull final MaterialTapTargetPrompt prompt, final int state)
                     {
                         if (stateProgress == 0)
                         {
@@ -290,7 +291,7 @@ public class MaterialTapTargetPromptUnitTest
                 .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
                 {
                     @Override
-                    public void onPromptStateChanged(final MaterialTapTargetPrompt prompt, final int state)
+                    public void onPromptStateChanged(@NonNull final MaterialTapTargetPrompt prompt, final int state)
                     {
                         if (stateProgress == 0)
                         {
@@ -334,7 +335,6 @@ public class MaterialTapTargetPromptUnitTest
         {
             @Override
             public KeyEvent.DispatcherState answer(final InvocationOnMock invocation)
-                    throws Throwable
             {
                 return dispatchState;
             }
@@ -364,6 +364,151 @@ public class MaterialTapTargetPromptUnitTest
         prompt.dismiss();
         prompt.show();
         assertTrue(prompt.isStarting());
+    }
+
+    @Test
+    public void testShowWhileShowing()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.mState = MaterialTapTargetPrompt.STATE_REVEALED;
+        prompt.show();
+        assertEquals(MaterialTapTargetPrompt.STATE_REVEALED, prompt.mState);
+    }
+
+    @Test
+    public void testFinishWhileFinished()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.show();
+        prompt.mState = MaterialTapTargetPrompt.STATE_FINISHED;
+        prompt.finish();
+        assertEquals(MaterialTapTargetPrompt.STATE_FINISHED, prompt.mState);
+    }
+
+    @Test
+    public void testStateGetters_NOT_SHOWN()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.show();
+        prompt.mState = MaterialTapTargetPrompt.STATE_NOT_SHOWN;
+        assertFalse(prompt.isStarting());
+        assertTrue(prompt.isComplete());
+        assertFalse(prompt.isDismissed());
+        assertFalse(prompt.isDismissing());
+    }
+
+    @Test
+    public void testStateGetters_REVEALING()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.show();
+        prompt.mState =  MaterialTapTargetPrompt.STATE_REVEALING;
+        assertTrue(prompt.isStarting());
+        assertFalse(prompt.isComplete());
+        assertFalse(prompt.isDismissed());
+        assertFalse(prompt.isDismissing());
+    }
+
+    @Test
+    public void testStateGetters_REVEALED()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.show();
+        prompt.mState =  MaterialTapTargetPrompt.STATE_REVEALED;
+        assertTrue(prompt.isStarting());
+        assertFalse(prompt.isComplete());
+        assertFalse(prompt.isDismissed());
+        assertFalse(prompt.isDismissing());
+    }
+
+    @Test
+    public void testStateGetters_PRESSED()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.show();
+        prompt.mState =  MaterialTapTargetPrompt.STATE_FOCAL_PRESSED;
+        assertFalse(prompt.isStarting());
+        assertFalse(prompt.isComplete());
+        assertFalse(prompt.isDismissed());
+        assertFalse(prompt.isDismissing());
+    }
+
+    @Test
+    public void testStateGetters_FINISHED()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.show();
+        prompt.mState =  MaterialTapTargetPrompt.STATE_FINISHED;
+        assertFalse(prompt.isStarting());
+        assertTrue(prompt.isComplete());
+        assertTrue(prompt.isDismissed());
+        assertFalse(prompt.isDismissing());
+    }
+
+    @Test
+    public void testStateGetters_DISMISSING()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.show();
+        prompt.mState =  MaterialTapTargetPrompt.STATE_DISMISSING;
+        assertFalse(prompt.isStarting());
+        assertTrue(prompt.isComplete());
+        assertFalse(prompt.isDismissed());
+        assertTrue(prompt.isDismissing());
+    }
+
+    @Test
+    public void testStateGetters_DISMISSED()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.show();
+        prompt.mState =  MaterialTapTargetPrompt.STATE_DISMISSED;
+        assertFalse(prompt.isStarting());
+        assertTrue(prompt.isComplete());
+        assertTrue(prompt.isDismissed());
+        assertFalse(prompt.isDismissing());
+    }
+
+    @Test
+    public void testStateGetters_FINISHING()
+    {
+        MaterialTapTargetPrompt prompt = createBuilder(SCREEN_WIDTH, SCREEN_HEIGHT, 0)
+                .setTarget(10, 10)
+                .setPrimaryText("Primary text")
+                .create();
+        prompt.show();
+        prompt.mState =  MaterialTapTargetPrompt.STATE_FINISHING;
+        assertFalse(prompt.isStarting());
+        assertTrue(prompt.isComplete());
+        assertFalse(prompt.isDismissed());
+        assertTrue(prompt.isDismissing());
     }
 
     private MaterialTapTargetPrompt.Builder createBuilder(final int screenWidth,

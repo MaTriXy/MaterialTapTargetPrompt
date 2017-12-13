@@ -2,6 +2,23 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.5.1 (2017-12-12)
+
+### Bug Fixes
+
+* Reverted changes that fixed prompt positioning not updating correctly when the target moves but caused the background to not be shown
+
+## v2.5.0 (2017-11-30)
+
+### Features
+
+* Added nullable annotations ([#92](https://github.com/sjwall/MaterialTapTargetPrompt/pull/92))
+* Added Android SDK 27 support ([#91](https://github.com/sjwall/MaterialTapTargetPrompt/pull/91))
+
+### Bug Fixes
+
+* Fixed prompt not updating correctly when target view moves
+
 ## v2.4.1 (2017-11-14)
 
 ### Bug Fixes
