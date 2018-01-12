@@ -24,10 +24,12 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -110,7 +112,12 @@ public class MaterialTapTargetPrompt
     @Nullable ValueAnimator mAnimationCurrent;
 
     /**
-     * Used to calculate the animation progress for the idle animation.
+     * Used to calculate the animation progress for the idle breathing focal animation.
+     */
+    @Nullable ValueAnimator mAnimationFocalBreathing;
+
+    /**
+     * Used to calculate the animation progress for the idle white flash animation.
      */
     @Nullable ValueAnimator mAnimationFocalRipple;
 
@@ -203,6 +210,12 @@ public class MaterialTapTargetPrompt
                     }
                 }
                 prepare();
+
+                if (mAnimationCurrent == null)
+                {
+                    // Force a relayout to update the view's location
+                    updateAnimation(1, 1);
+                }
             }
         };
     }
@@ -425,6 +438,12 @@ public class MaterialTapTargetPrompt
             mAnimationFocalRipple.cancel();
             mAnimationFocalRipple = null;
         }
+        if (mAnimationFocalBreathing != null)
+        {
+            mAnimationFocalBreathing.removeAllUpdateListeners();
+            mAnimationFocalBreathing.cancel();
+            mAnimationFocalBreathing = null;
+        }
     }
 
     /**
@@ -470,12 +489,12 @@ public class MaterialTapTargetPrompt
     void startIdleAnimations()
     {
         cleanUpAnimation();
-        mAnimationCurrent = ValueAnimator.ofFloat(1, 1.1f, 1);
-        mAnimationCurrent.setInterpolator(mView.mPromptOptions.getAnimationInterpolator());
-        mAnimationCurrent.setDuration(1000);
-        mAnimationCurrent.setStartDelay(225);
-        mAnimationCurrent.setRepeatCount(ValueAnimator.INFINITE);
-        mAnimationCurrent.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        mAnimationFocalBreathing = ValueAnimator.ofFloat(1, 1.1f, 1);
+        mAnimationFocalBreathing.setInterpolator(mView.mPromptOptions.getAnimationInterpolator());
+        mAnimationFocalBreathing.setDuration(1000);
+        mAnimationFocalBreathing.setStartDelay(225);
+        mAnimationFocalBreathing.setRepeatCount(ValueAnimator.INFINITE);
+        mAnimationFocalBreathing.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
         {
             boolean direction = true;
 
@@ -502,7 +521,7 @@ public class MaterialTapTargetPrompt
                 mView.invalidate();
             }
         });
-        mAnimationCurrent.start();
+        mAnimationFocalBreathing.start();
 
         mAnimationFocalRipple = ValueAnimator.ofFloat(1.1f, 1.6f);
         mAnimationFocalRipple.setInterpolator(mView.mPromptOptions.getAnimationInterpolator());
@@ -522,7 +541,7 @@ public class MaterialTapTargetPrompt
      * Updates the positioning and alpha values using the animation values.
      *
      * @param revealModifier The amount to modify the reveal size, between 0 and 1.
-     * @param alphaModifier The amount to modify the alpha value, between 0 and 1.
+     * @param alphaModifier  The amount to modify the alpha value, between 0 and 1.
      */
     void updateAnimation(final float revealModifier, final float alphaModifier)
     {
@@ -692,8 +711,20 @@ public class MaterialTapTargetPrompt
                 canvas.clipRect(mClipBounds);
             }
 
-            //Draw the backgrounds
+            //Draw the backgrounds, clipping the focal path so we don't draw over it.
+            final Path focalPath = mPromptOptions.getPromptFocal().getPath();
+            if (focalPath != null)
+            {
+                canvas.save();
+                canvas.clipPath(focalPath, Region.Op.DIFFERENCE);
+            }
+
             mPromptOptions.getPromptBackground().draw(canvas);
+
+            if (focalPath != null)
+            {
+                canvas.restore();
+            }
 
             //Draw the focal
             mPromptOptions.getPromptFocal().draw(canvas);
