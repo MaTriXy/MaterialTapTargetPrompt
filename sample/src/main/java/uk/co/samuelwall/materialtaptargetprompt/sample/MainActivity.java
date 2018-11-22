@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Samuel Wall
+ * Copyright (C) 2018 Samuel Wall
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +43,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence;
 import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.FullscreenPromptBackground;
 import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.RectanglePromptBackground;
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity
         {
             return;
         }
-        SpannableStringBuilder secondaryText = new SpannableStringBuilder("Tap the envelop to start composing your first email");
+        SpannableStringBuilder secondaryText = new SpannableStringBuilder("Tap the envelope to start composing your first email");
         secondaryText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.colorAccent)), 8, 15, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         SpannableStringBuilder primaryText = new SpannableStringBuilder("Send your first email");
         primaryText.setSpan(new BackgroundColorSpan(ContextCompat.getColor(this, R.color.colorAccent)), 0, 4, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -114,6 +116,31 @@ public class MainActivity extends AppCompatActivity
                 })
                 .create();
         mFabPrompt.show();
+    }
+
+    public void showFabPromptFor(View view)
+    {
+        new MaterialTapTargetPrompt.Builder(MainActivity.this)
+                .setTarget(findViewById(R.id.fab))
+                .setFocalPadding(R.dimen.dp40)
+                .setPrimaryText("showFor(7000)")
+                .setSecondaryText("This prompt will show for 7 seconds")
+                .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state)
+                    {
+                        if (state == MaterialTapTargetPrompt.STATE_SHOW_FOR_TIMEOUT)
+                        {
+
+                            Toast.makeText(MainActivity.this,
+                                "Prompt timedout after 7 seconds", Toast.LENGTH_SHORT)
+                                .show();
+                        }
+                    }
+                })
+                .showFor(7000);
     }
 
     public void showNavPrompt(View view)
@@ -241,6 +268,16 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(this, DialogStyleActivity.class));
     }
 
+    public void showSupportFragmentDialog(View view)
+    {
+        new SupportDialogFragmentExample().show(this.getSupportFragmentManager(), "DIALOGFRAGMENT");
+    }
+
+    public void showFragmentDialog(View view)
+    {
+        new DialogFragmentExample().show(this.getFragmentManager(), "DIALOGFRAGMENT");
+    }
+
     public void showActionModePrompt(View view)
     {
         mActionMode = this.startSupportActionMode(mActionModeCallback);
@@ -255,9 +292,9 @@ public class MainActivity extends AppCompatActivity
                 .show();
     }
 
-    public void showActivity(View view)
+    public void showKotlinActivity(View view)
     {
-        startActivity(new Intent(this, EmptyActivity.class));
+        startActivity(new Intent(this, KotlinActivity.class));
     }
 
 
@@ -269,6 +306,30 @@ public class MainActivity extends AppCompatActivity
     public void showCardsActivity(View view)
     {
         startActivity(new Intent(this, CardActivity.class));
+    }
+
+    public void showSequence(View view) {
+
+        new MaterialTapTargetSequence()
+            .addPrompt(new MaterialTapTargetPrompt.Builder(MainActivity.this)
+                .setTarget(findViewById(R.id.fab))
+                .setPrimaryText("Step 1")
+                .setSecondaryText("This will show for 4 seconds")
+                .setFocalPadding(R.dimen.dp40)
+                .create(), 4000)
+            .addPrompt(new MaterialTapTargetPrompt.Builder(MainActivity.this)
+                .setTarget(findViewById(R.id.action_search))
+                .setPrimaryText("Step 2")
+                .setSecondaryText("This will show till you press it")
+                .setAnimationInterpolator(new LinearOutSlowInInterpolator())
+                .setFocalPadding(R.dimen.dp40)
+                .setIcon(R.drawable.ic_search))
+            .show();
+    }
+
+    public void showListActivity(View view)
+    {
+        startActivity(new Intent(this, ListActivity.class));
     }
 
     public void showNoAutoDismiss(View view)

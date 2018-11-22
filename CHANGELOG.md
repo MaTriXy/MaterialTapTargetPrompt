@@ -2,6 +2,116 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v2.14.0 (2018-10-26)
+
+### Features
+
+* Added `ImmersiveModeCompatPromptBackground` ([#135](https://github.com/sjwall/MaterialTapTargetPrompt/issues/pull/135))
+
+### Bug Fixes
+
+* Fix null pointer exception in `SupportFragmentResourceFinder` ([#137](https://github.com/sjwall/MaterialTapTargetPrompt/issues/137))
+
+## v2.13.0 (2018-10-03)
+
+### Features
+
+* Added `STATE_BACK_BUTTON_PRESSED` state which is emitted before `STATE_NON_FOCAL_PRESSED` when the system back button is pressed ([#138](https://github.com/sjwall/MaterialTapTargetPrompt/issues/138))
+
+## v2.12.4 (2018-09-24)
+
+### Bug Fixes
+
+* Correct target rendered position with scroll ([#136](https://github.com/sjwall/MaterialTapTargetPrompt/issues/136))
+* Fix animation trying to continue after view removed
+
+## v2.12.3 (2018-09-10)
+
+### Bug Fixes
+
+* Fixed prompt being added to wrong view for fragments
+* Fixed prompt text being laid out incorrectly when clipping bounds are empty
+
+## v2.12.2 (2018-09-09)
+
+### Bug Fixes
+
+* Fixed prompt clipping incorrectly in support dialog fragment
+* Fixed prompt increasing parent view size
+
+## v2.12.1 (2018-07-25)
+
+### Bug Fixes
+
+* Fixed NPE in TalkBack accessibility ([#131](https://github.com/sjwall/MaterialTapTargetPrompt/issues/131))
+
+## v2.12.0 (2018-07-14)
+
+### Features
+
+* Added TalkBack support ([#127](https://github.com/sjwall/MaterialTapTargetPrompt/issues/127))
+
+## v2.11.0 (2018-07-08)
+
+### Features
+
+* Added `finish` to `MaterialTapTargetSequence` to cancel a sequence mid way with a finish action
+* Added `dismiss` to `MaterialTapTargetSequence` to cancel a sequence mid way with a dismiss action
+* Added `showFromIndex` to `MaterialTapTargetSequence` to start or continue a sequence from any prompt in it
+
+## v2.10.0 (2018-06-30)
+
+### Features
+
+* Added `showFor` support to `MaterialTapTargetSequence`
+* Added support for passing `MaterialTapTargetPrompt.Builder` or `PromptOptions` to `MaterialTapTargetSequence`
+
+### Improvements
+
+* Improved circle background position calculations
+
+### Other
+
+* Added examples written in Kotlin
+
+## v2.9.0 (2018-05-19)
+
+### Features
+
+* Added `MaterialTapTargetSequence` for showing prompts one after another ([#118](https://github.com/sjwall/MaterialTapTargetPrompt/issues/118))
+
+### Bug Fixes
+
+* Fixed incorrect prompt size calculation ([#116](https://github.com/sjwall/MaterialTapTargetPrompt/issues/116))
+* Fixed incorrect prompt size calculation when target is wider than the text
+
+## v2.8.0 (2018-05-06)
+
+### Features
+
+* Added support library as a `CompileOnly` dependency ([#114](https://github.com/sjwall/MaterialTapTargetPrompt/issues/114))
+* Added support library fragment constructors to `Builder` ([#114](https://github.com/sjwall/MaterialTapTargetPrompt/issues/114))
+
+### Bug Fixes
+
+* Fixed memory leak caused by animation maintaining view reference ([#113](https://github.com/sjwall/MaterialTapTargetPrompt/issues/113))
+
+### Deprecated
+
+* Deprecated Android system fragment constructors in `Builder` ([#114](https://github.com/sjwall/MaterialTapTargetPrompt/issues/114))
+
+## v2.7.0 (2018-02-17)
+
+### Features
+
+* Added showFor to show prompt for a time limit
+
+## v2.6.1 (2018-02-04)
+
+### Bug Fixes
+
+* Fixed UnsupportedOperationException caused by clipping to path in Android SDK < 18 ([#101](https://github.com/sjwall/MaterialTapTargetPrompt/issues/101))
+
 ## v2.6.0 (2018-01-11)
 
 ### Features
