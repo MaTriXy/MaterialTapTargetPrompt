@@ -2,6 +2,79 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## v3.3.2 (2021-11-08
+
+### Bug Fixes
+
+* Clip text using background path instead of via Xfermode to fix weird UI issues ([#202](https://github.com/sjwall/MaterialTapTargetPrompt/pull/202) [#201](https://github.com/sjwall/MaterialTapTargetPrompt/issues/201)) ([@peterdk](https://github.com/peterdk)))
+
+## v3.3.1 (2021-11-06)
+
+### Bug Fixes
+
+* Add Xfer mode to paint, so the text pixels are only drawn when the background reaches them ([#200](https://github.com/sjwall/MaterialTapTargetPrompt/pull/200) [#146](https://github.com/sjwall/MaterialTapTargetPrompt/issues/146)) ([@danilodanicomendes](https://github.com/danilodanicomendes)))
+
+## v3.3.0 (2021-07-02)
+
+### Bug Fixes
+
+* Fix NPE when setting Typeface with style 0 ([#188](https://github.com/sjwall/MaterialTapTargetPrompt/issues/188)) ([@akwizgran](https://github.com/akwizgran)))
+
+### Other
+
+* Target Android SDK 30
+
+## v3.2.0 (2021-05-18)
+
+### Testing
+
+* PromptView and PromptView.mPromptOptions are visible for testing ([#193](https://github.com/sjwall/MaterialTapTargetPrompt/pull/193)) ([@hdani9307](https://github.com/hdani9307))
+
+## v3.1.1 (2021-05-03)
+
+### Bug Fixes
+
+* Fix NPE on animation start ([#164](https://github.com/sjwall/MaterialTapTargetPrompt/issues/186))
+* Fix NPE on `CircleFocal` path ([#164](https://github.com/sjwall/MaterialTapTargetPrompt/issues/190))
+* Fix `PromptView` content description not being set
+
+## v3.1.0 (2020-12-17)
+
+### Features
+
+* Add `setIgnoreStatusBar` to `PromptOptions` to allow configuring if the prompt displays over the status bar. Default is false. ([#183](https://github.com/sjwall/MaterialTapTargetPrompt/pull/183)) ([@alexeyosminin](https://github.com/alexeyosminin))
+
+### Bug Fixes
+
+* Fix `FullscreenPromptBackground` not displaying correctly on displays with cutouts ([#182](https://github.com/sjwall/MaterialTapTargetPrompt/pull/182)) ([@Iljo](https://github.com/Iljo))
+
+## v3.0.1 (2020-10-23)
+
+* Upgraded dependencies to be not version specific
+
+### Bug Fixes
+
+*  Fix FragmentContainerView as parent ([#180](https://github.com/sjwall/MaterialTapTargetPrompt/pull/180)) ([@JMavrelos](https://github.com/JMavrelos))
+
+## v3.0.0 (2019-08-18)
+
+* Migrate to [AndroidX](https://developer.android.com/jetpack/androidx) ([#164](https://github.com/sjwall/MaterialTapTargetPrompt/issues/pull/164)) ([@virengujariya](https://github.com/virengujariya), [@liaowng](https://github.com/liaowng))
+
+### Removed
+
+* Remove android.app.Fragment and android.app.DialogFragment builder constructors.
+These Fragments can still be used by passing `getActivity()` and `getDialog()` respectively.
+
+## v2.15.0 (2019-06-23)
+
+### Features
+
+* Added `setContentDescription` to override content description for accessibility ([#157](https://github.com/sjwall/MaterialTapTargetPrompt/issues/pull/157)) ([@mudar](https://github.com/mudar))
+
+### Bug Fixes
+
+* Fix index out of bounds exception in sequence showFromIndex ([#161](https://github.com/sjwall/MaterialTapTargetPrompt/issues/pull/161)) ([@radgospodinov](https://github.com/radgospodinov))
+
 ## v2.14.0 (2018-10-26)
 
 ### Features

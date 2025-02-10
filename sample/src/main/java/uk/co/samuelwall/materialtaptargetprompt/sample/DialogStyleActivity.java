@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Samuel Wall
+ * Copyright (C) 2016-2017, 2019 Samuel Wall
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package uk.co.samuelwall.materialtaptargetprompt.sample;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ActionMenuView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ActionMenuView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,15 +66,10 @@ public class DialogStyleActivity extends AppCompatActivity
         final Toolbar tb = this.findViewById(R.id.toolbar);
         tapTargetPromptBuilder.setTarget(tb.getChildAt(1));
 
-        tapTargetPromptBuilder.setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
-        {
-            @Override
-            public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state)
+        tapTargetPromptBuilder.setPromptStateChangeListener((prompt, state) -> {
+            if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
             {
-                if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
-                {
-                    //Do something such as storing a value so that this prompt is never shown again
-                }
+                //Do something such as storing a value so that this prompt is never shown again
             }
         });
         tapTargetPromptBuilder.show();
@@ -98,7 +93,7 @@ public class DialogStyleActivity extends AppCompatActivity
         }
         else
         {
-            Toast.makeText(this, R.string.overflow_unavailable, Toast.LENGTH_SHORT);
+            Toast.makeText(this, R.string.overflow_unavailable, Toast.LENGTH_SHORT).show();
         }
         tapTargetPromptBuilder.show();
     }

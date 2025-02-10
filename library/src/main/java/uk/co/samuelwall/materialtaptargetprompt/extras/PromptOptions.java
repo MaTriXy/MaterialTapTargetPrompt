@@ -24,15 +24,15 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DimenRes;
-import android.support.annotation.Dimension;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.annotation.StyleRes;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DimenRes;
+import androidx.annotation.Dimension;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.annotation.StyleRes;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -149,6 +149,11 @@ public class PromptOptions<T extends PromptOptions>
     private boolean mBackButtonDismissEnabled = true;
 
     /**
+     * Indicates how drawing area should be placed regarding to system status bar
+     */
+    private boolean mIgnoreStatusBar = false;
+
+    /**
      * Listener for when the prompt state changes.
      */
     @Nullable private MaterialTapTargetPrompt.PromptStateChangeListener mPromptStateChangeListener;
@@ -166,6 +171,7 @@ public class PromptOptions<T extends PromptOptions>
     private boolean mAutoFinish = true;
     private boolean mCaptureTouchEventOutsidePrompt;
     @Nullable private Typeface mPrimaryTextTypeface, mSecondaryTextTypeface;
+    @Nullable private String mContentDescription;
     private int mPrimaryTextTypefaceStyle, mSecondaryTextTypefaceStyle;
     @Nullable private ColorStateList mIconDrawableTintList = null;
     @Nullable private PorterDuff.Mode mIconDrawableTintMode = PorterDuff.Mode.MULTIPLY;
@@ -246,6 +252,7 @@ public class PromptOptions<T extends PromptOptions>
         mSecondaryTextTypefaceStyle = a.getInt(R.styleable.PromptView_mttp_secondaryTextStyle, mSecondaryTextTypefaceStyle);
         mPrimaryTextTypeface = PromptUtils.setTypefaceFromAttrs(a.getString(R.styleable.PromptView_mttp_primaryTextFontFamily), a.getInt(R.styleable.PromptView_mttp_primaryTextTypeface, 0), mPrimaryTextTypefaceStyle);
         mSecondaryTextTypeface = PromptUtils.setTypefaceFromAttrs(a.getString(R.styleable.PromptView_mttp_secondaryTextFontFamily), a.getInt(R.styleable.PromptView_mttp_secondaryTextTypeface, 0), mSecondaryTextTypefaceStyle);
+        mContentDescription = a.getString(R.styleable.PromptView_mttp_contentDescription);
 
         mIconDrawableColourFilter = a.getColor(R.styleable.PromptView_mttp_iconColourFilter, mBackgroundColour);
         mIconDrawableTintList = a.getColorStateList(R.styleable.PromptView_mttp_iconTint);
@@ -699,6 +706,51 @@ public class PromptOptions<T extends PromptOptions>
     public int getSecondaryTextTypefaceStyle()
     {
         return mSecondaryTextTypefaceStyle;
+    }
+
+    /**
+     * Set the accessibility content description text using the given resource id.
+     *
+     * @param resId The string resource id for the accessibility content description text
+     * @return This Builder object to allow for chaining of calls to set methods
+     */
+    @NonNull
+    public T setContentDescription(@StringRes final int resId)
+    {
+        mContentDescription = mResourceFinder.getString(resId);
+        return (T) this;
+    }
+
+    /**
+     * Set the accessibility content description text to the given string
+     *
+     * @param text The accessibility content description text
+     * @return This Builder object to allow for chaining of calls to set methods
+     */
+    @NonNull
+    public T setContentDescription(@Nullable final String text)
+    {
+        mContentDescription = text;
+        return (T) this;
+    }
+
+    /**
+     * Get the text for the accessibility content description.
+     * Defaults to a concatenation of primary and secondary texts.
+     *
+     * @return The accessibility content description text.
+     */
+    @Nullable
+    public String getContentDescription()
+    {
+        if (mContentDescription != null)
+        {
+            return mContentDescription;
+        }
+        else
+        {
+            return String.format("%s. %s", mPrimaryText, mSecondaryText);
+        }
     }
 
     /**
@@ -1331,7 +1383,7 @@ public class PromptOptions<T extends PromptOptions>
 
     /**
      * Back button can be used to dismiss the prompt.
-     * Default: {@link true}
+     * Default: true
      *
      * @param enabled True for back button dismiss enabled
      * @return This Builder object to allow for chaining of calls to set methods
@@ -1351,6 +1403,30 @@ public class PromptOptions<T extends PromptOptions>
     public boolean getBackButtonDismissEnabled()
     {
         return mBackButtonDismissEnabled;
+    }
+
+    /**
+     * Indicates whether to ignore system status bar. Drawing area will be increased to the top of
+     * screen regardless of status bar if this flag is true (status bar should be transparent to see
+     * any effect from this)
+     * Default: false
+     * @param enabled true for drawing behind system status bar
+     * @return This Builder object to allow for chaining of calls to set methods
+     */
+    @NonNull
+    public T setIgnoreStatusBar(final boolean enabled)
+    {
+        mIgnoreStatusBar = enabled;
+        return (T) this;
+    }
+
+    /**
+     * Get ignore status bar flag
+     * @return true if status bar should be ignored, otherwise false
+     */
+    public boolean getIgnoreStatusBar()
+    {
+        return mIgnoreStatusBar;
     }
 
     /**
@@ -1434,8 +1510,7 @@ public class PromptOptions<T extends PromptOptions>
      * create and display the prompt.
      * </p>
      * <p>
-     * Will return {@link null} if a valid target has not been set or the primary text is {@link
-     * null}.
+     * Will return null if a valid target has not been set or the primary text is null.
      * To check that a valid target has been set call {@link #isTargetSet()}.
      * </p>
      *
@@ -1500,8 +1575,8 @@ public class PromptOptions<T extends PromptOptions>
      *     prompt.show();
      * </pre>
      * <p>
-     * Will return {@link null} if a valid target has not been set or the primary text and secondary
-     * text are {@link null}.
+     * Will return null if a valid target has not been set or the primary text and secondary
+     * text are null.
      * To check that a valid target has been set call {@link #isTargetSet()}.
      * </p>
      *
@@ -1529,8 +1604,8 @@ public class PromptOptions<T extends PromptOptions>
      *     prompt.showFor(milliseconds);
      * </pre>
      * <p>
-     * Will return {@link null} if a valid target has not been set or the primary text and secondary
-     * text are {@link null}.
+     * Will return null if a valid target has not been set or the primary text and secondary
+     * text are null.
      * To check that a valid target has been set call {@link #isTargetSet()}.
      * </p>
      *

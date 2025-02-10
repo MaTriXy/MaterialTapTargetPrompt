@@ -25,12 +25,12 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.DimenRes;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.annotation.StyleRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.annotation.StyleRes;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -60,7 +60,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = uk.co.samuelwall.materialtaptargetprompt.BuildConfig.class, sdk = 22)
+@Config(sdk = Build.VERSION_CODES.LOLLIPOP_MR1)
 public class PromptOptionsUnitTest
 {
     @Test
@@ -919,5 +919,27 @@ public class PromptOptionsUnitTest
     public void testPromptOptions_ShowFor_Empty()
     {
         assertNull(UnitTestUtils.createPromptOptions().showFor(6000));
+    }
+
+    @Test
+    public void testPromptOptions_ContentDescription()
+    {
+        final PromptOptions options = UnitTestUtils.createPromptOptions()
+                .setPrimaryText("primary")
+                .setSecondaryText("secondary");
+        assertEquals("primary. secondary", options.getContentDescription());
+        assertEquals(options, options.setContentDescription("content description"));
+        assertEquals("content description", options.getContentDescription());
+    }
+
+    @Test
+    public void testPromptOptions_ContentDescription_Resource()
+    {
+        @IdRes final int resourceId = 325426;
+        final String contentDescription = "Resource content description";
+        final PromptOptions options = UnitTestUtils.createPromptOptions(true);
+        when(options.getResourceFinder().getString(resourceId)).thenReturn(contentDescription);
+        assertEquals(options, options.setContentDescription(resourceId));
+        assertEquals(contentDescription, options.getContentDescription());
     }
 }

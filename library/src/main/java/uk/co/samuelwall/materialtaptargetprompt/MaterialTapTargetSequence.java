@@ -16,8 +16,8 @@
 
 package uk.co.samuelwall.materialtaptargetprompt;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -290,6 +290,7 @@ public class MaterialTapTargetSequence
     public MaterialTapTargetSequence showFromIndex(final int index)
     {
         this.dismiss();
+        this.nextPromptIndex = index;
         this.show(index);
         return this;
     }

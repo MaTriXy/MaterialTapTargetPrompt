@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Samuel Wall
+ * Copyright (C) 2018-2019 Samuel Wall
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 package uk.co.samuelwall.materialtaptargetprompt.sample
 
 import android.os.Bundle
-import android.support.v4.view.animation.FastOutSlowInInterpolator
-import android.support.v4.view.animation.LinearOutSlowInInterpolator
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
-import android.support.v7.widget.ActionMenuView
-import android.support.v7.widget.Toolbar
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.ActionMenuView
+import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -69,7 +69,6 @@ class KotlinActivity : AppCompatActivity() {
         findViewById<View>(R.id.other_examples_card).visibility = View.GONE
         findViewById<View>(R.id.other_examples_list).visibility = View.GONE
         findViewById<View>(R.id.other_examples_support_fragment_dialog).visibility = View.GONE
-        findViewById<View>(R.id.other_examples_fragment_dialog).visibility = View.GONE
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -117,7 +116,7 @@ class KotlinActivity : AppCompatActivity() {
                 .setAnimationInterpolator(FastOutSlowInInterpolator())
                 .setMaxTextWidth(R.dimen.tap_target_menu_max_width)
                 .setIcon(R.drawable.ic_back)
-        val tb = this.findViewById<Toolbar>(android.support.v7.appcompat.R.id.action_bar)
+        val tb = this.findViewById<Toolbar>(R.id.action_bar)
         tapTargetPromptBuilder.setTarget(tb.getChildAt(1))
 
         tapTargetPromptBuilder.setPromptStateChangeListener { prompt, state ->
@@ -135,12 +134,12 @@ class KotlinActivity : AppCompatActivity() {
                 .setAnimationInterpolator(FastOutSlowInInterpolator())
                 .setMaxTextWidth(R.dimen.tap_target_menu_max_width)
                 .setIcon(R.drawable.ic_more_vert)
-        val tb = this.findViewById<Toolbar>(android.support.v7.appcompat.R.id.action_bar)
+        val tb = this.findViewById<Toolbar>(R.id.action_bar)
         val child = tb.getChildAt(2)
         if (child is ActionMenuView) {
             tapTargetPromptBuilder.setTarget(child.getChildAt(child.childCount - 1))
         } else {
-            Toast.makeText(this, R.string.overflow_unavailable, Toast.LENGTH_SHORT)
+            Toast.makeText(this, R.string.overflow_unavailable, Toast.LENGTH_SHORT).show()
         }
         tapTargetPromptBuilder.show()
     }
@@ -166,12 +165,12 @@ class KotlinActivity : AppCompatActivity() {
     fun showStylePrompt(view: View) {
         val builder = MaterialTapTargetPrompt.Builder(this,
                                                       R.style.MaterialTapTargetPromptTheme_FabTarget)
-        val tb = this.findViewById<Toolbar>(android.support.v7.appcompat.R.id.action_bar)
+        val tb = this.findViewById<Toolbar>(R.id.action_bar)
         val child = tb.getChildAt(2)
         if (child is ActionMenuView) {
             builder.setTarget(child.getChildAt(child.childCount - 1))
         } else {
-            Toast.makeText(this, R.string.overflow_unavailable, Toast.LENGTH_SHORT)
+            Toast.makeText(this, R.string.overflow_unavailable, Toast.LENGTH_SHORT).show()
         }
         builder.setIcon(R.drawable.ic_more_vert)
                 .show()

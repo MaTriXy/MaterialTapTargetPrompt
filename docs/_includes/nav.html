@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2018 Samuel Wall
+  ~ Copyright (C) 2016-2021 Samuel Wall
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -17,8 +17,11 @@
     <header>
         <p>{{ site.description | default: site.github.project_tagline }}</p>
 
-        <a href="https://travis-ci.org/sjwall/MaterialTapTargetPrompt" title="Build Status" target="_blank">
-            <img src="https://travis-ci.org/sjwall/MaterialTapTargetPrompt.svg?branch=master">
+        <a href="http://unmaintained.tech/">
+            <img alt="No Maintenance Intended" src="http://unmaintained.tech/badge.svg">
+        </a>
+        <a href="https://app.travis-ci.com/github/sjwall/MaterialTapTargetPrompt" title="Build Status" target="_blank">
+            <img src="https://app.travis-ci.com/sjwall/MaterialTapTargetPrompt.svg?branch=master">
         </a>
         <a href="https://codecov.io/gh/sjwall/MaterialTapTargetPrompt" title="codecov" target="_blank">
             <img src="https://codecov.io/gh/sjwall/MaterialTapTargetPrompt/branch/master/graph/badge.svg">
@@ -26,16 +29,29 @@
         <a href="https://codeclimate.com/github/sjwall/MaterialTapTargetPrompt/maintainability">
             <img src="https://api.codeclimate.com/v1/badges/242b94ecd2d181b8298e/maintainability" />
         </a>
-        <a href="https://bintray.com/sjwall/maven/material-tap-target-prompt/_latestVersion" title="Download" target="_blank">
-            <img src="https://api.bintray.com/packages/sjwall/maven/material-tap-target-prompt/images/download.svg">
+        <a href="https://repo1.maven.org/maven2/uk/co/samuelwall/material-tap-target-prompt/" title="Download" target="_blank">
+            <img src="https://img.shields.io/maven-central/v/uk.co.samuelwall/material-tap-target-prompt">
         </a>
-        <a href="javadocs" title="javadocs">
-            <img src="https://img.shields.io/badge/JavaDocs-{{site.github.latest_release.tag_name | remove: "v"}}-brightgreen.svg" alt="{{site.github.latest_release.tag_name }}">
+        <a href="javadoc" title="JavaDoc">
+            <img src="https://img.shields.io/badge/JavaDoc-{{site.github.latest_release.tag_name | remove: "v"}}-brightgreen.svg" alt="{{site.github.latest_release.tag_name }}">
         </a>
         <a href="http://makeapullrequest.com" title="PRs Welcome" target="_blank">
             <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat">
         </a>
+        <br>
+        <iframe src="https://github.com/sponsors/sjwall/button" title="Sponsor sjwall" height="35" width="116" style="border: 0;"></iframe>
     </header>
+    <div>
+        <p>
+            Android is moving towards compose, for an alternative library in compose have a look at <a href="https://github.com/canopas/Intro-showcase-view">intro-showcase-view</a>.
+        </p>
+        <p>
+            Bug fix pull requests will be accepted for this library for the immediate future but there will be no active development or new features and it will eventually be archived.
+        </p>
+        <p>
+            Thank you to everyone who has contributed to the library over the years!
+        </p>
+    </div>
     <ul class="links">
         <li>
             <a href="{{ '/#quick-start' | relative_url }}">Quick start</a>
@@ -61,7 +77,7 @@
             </ul>
         </li>
         <li>
-            <a href="javadocs">JavaDocs</a>
+            <a href="javadoc">JavaDoc</a>
         </li>
         <li>
             <a href="{{ site.github.repository_url }}/blob/master/LICENSE" target="_blank">License</a>
@@ -72,6 +88,11 @@
             This project is maintained by
             <a href="{{ site.github.owner_url }}">
                 {{ site.github.owner_name }}
+            </a>
+        </p>
+        <p>
+            <a href="privacy_policy">
+                Privacy Policy
             </a>
         </p>
         <p>

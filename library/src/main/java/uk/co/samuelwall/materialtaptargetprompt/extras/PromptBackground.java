@@ -16,9 +16,10 @@
 
 package uk.co.samuelwall.materialtaptargetprompt.extras;
 
+import android.graphics.Path;
 import android.graphics.Rect;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 
 /**
  * Used to render the prompt background.
@@ -41,4 +42,11 @@ public abstract class PromptBackground implements PromptUIElement
      */
     public abstract void prepare(@NonNull final PromptOptions options,
                                  boolean clipToBounds, @NonNull Rect clipBounds);
+
+    /**
+     * @return The path of the current background, useful for clipping content
+     */
+    public Path getPath() {
+        return null;
+    }
 }

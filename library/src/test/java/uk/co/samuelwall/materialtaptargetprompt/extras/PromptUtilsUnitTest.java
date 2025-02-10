@@ -26,7 +26,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = uk.co.samuelwall.materialtaptargetprompt.BuildConfig.class, sdk = 22)
+@Config(sdk = Build.VERSION_CODES.LOLLIPOP_MR1)
 public class PromptUtilsUnitTest
 {
     @Test
@@ -129,6 +129,24 @@ public class PromptUtilsUnitTest
         assertNotNull(typeface);
         assertEquals(Typeface.BOLD_ITALIC, typeface.getStyle());
 
+        // Null
+
+        typeface = PromptUtils.setTypefaceFromAttrs(null, 0, Typeface.NORMAL);
+        assertNotNull(typeface);
+        assertEquals(Typeface.NORMAL, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs(null, 0, Typeface.BOLD);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs(null, 0, Typeface.ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.ITALIC, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs(null, 0, Typeface.BOLD_ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD_ITALIC, typeface.getStyle());
+
         typeface = PromptUtils.setTypefaceFromAttrs(null, 1, Typeface.NORMAL);
         assertNotNull(typeface);
         assertEquals(Typeface.NORMAL, typeface.getStyle());
@@ -174,6 +192,72 @@ public class PromptUtilsUnitTest
         assertEquals(Typeface.ITALIC, typeface.getStyle());
 
         typeface = PromptUtils.setTypefaceFromAttrs(null, 3, Typeface.BOLD_ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD_ITALIC, typeface.getStyle());
+
+        // Family not found
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 0, Typeface.NORMAL);
+        assertNotNull(typeface);
+        assertEquals(Typeface.NORMAL, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 0, Typeface.BOLD);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 0, Typeface.ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.ITALIC, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 0, Typeface.BOLD_ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD_ITALIC, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 1, Typeface.NORMAL);
+        assertNotNull(typeface);
+        assertEquals(Typeface.NORMAL, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 1, Typeface.BOLD);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 1, Typeface.ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.ITALIC, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 1, Typeface.BOLD_ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD_ITALIC, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 2, Typeface.NORMAL);
+        assertNotNull(typeface);
+        assertEquals(Typeface.NORMAL, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 2, Typeface.BOLD);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 2, Typeface.ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.ITALIC, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 2, Typeface.BOLD_ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD_ITALIC, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 3, Typeface.NORMAL);
+        assertNotNull(typeface);
+        assertEquals(Typeface.NORMAL, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 3, Typeface.BOLD);
+        assertNotNull(typeface);
+        assertEquals(Typeface.BOLD, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 3, Typeface.ITALIC);
+        assertNotNull(typeface);
+        assertEquals(Typeface.ITALIC, typeface.getStyle());
+
+        typeface = PromptUtils.setTypefaceFromAttrs("I do not exist", 3, Typeface.BOLD_ITALIC);
         assertNotNull(typeface);
         assertEquals(Typeface.BOLD_ITALIC, typeface.getStyle());
     }
@@ -569,7 +653,9 @@ public class PromptUtilsUnitTest
         assertEquals(300, layout.getWidth());
     }
 
-    /*@Test
+    /*
+    // StaticLayout.Builder.obtain is not mocked so this test will fail
+    @Test
     @TargetApi(Build.VERSION_CODES.M)
     public void testCreateStaticTextLayoutMarshmallow()
     {
@@ -611,20 +697,5 @@ public class PromptUtilsUnitTest
     public void testContainsInset()
     {
         assertTrue(PromptUtils.containsInset(new Rect(0, 0, 500, 500), 50, 60, 60));
-    }
-
-    @Deprecated
-    @Test
-    public void testIsVersionAfterJellyBeanMR1()
-    {
-        assertTrue(PromptUtils.isVersionAfterJellyBeanMR1());
-    }
-
-    @Deprecated
-    @Test
-    public void testIsVersionBeforeJellyBeanMR1()
-    {
-        ReflectionHelpers.setStaticField(Build.VERSION.class, "SDK_INT", Build.VERSION_CODES.JELLY_BEAN);
-        assertFalse(PromptUtils.isVersionAfterJellyBeanMR1());
     }
 }

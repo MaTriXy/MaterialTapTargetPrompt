@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Samuel Wall
+ * Copyright (C) 2016-2021 Samuel Wall
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +15,37 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.2.61'
+    ext.kotlin_version = '1.5.10'
     repositories {
+        mavenCentral()
         google()
-        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath 'org.jacoco:org.jacoco.core:0.8.2'
+        classpath 'org.jacoco:org.jacoco.core:0.8.6'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.hiya:jacoco-android:0.2'
     }
 }
 
 allprojects {
     repositories {
+        mavenCentral()
         google()
-        jcenter()
     }
 }
 
 ext {
-    supportLibVersion = '27.1.1'
-
     minSdkVersion = 14
-    targetSdkVersion = 27
-    compileSdkVersion = 27
+    targetSdkVersion = 30
+    compileSdkVersion = 30
+    buildToolsVersion = '30.0.3'
 
-    versionCode = 57
-    versionName = '2.14.0'
+    versionCode = 66
+    versionName = '3.3.2'
 }
